@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: Gatekeeper API
+  version: 1.0.0
+  description: Compact internal authorization gateway API.
+servers:
+  - url: http://localhost:8080
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /readyz:
+    get:
+      summary: Readiness check
+      responses:
+        '200':
+          description: Ready
+  /v1/authorize:
+    post:
+      summary: Evaluate access for a subject token against an action and resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizeRequest'
+      responses:
+        '200':
+          description: Decision result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizeResponse'
+        '401':
+          description: Unauthorized
+  /v1/audit/events:
+    get:
+      summary: Return recent audit events
+      responses:
+        '200':
+          description: Audit event list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditEvent'
+components:
+  schemas:
+    AuthorizeRequest:
+      type: object
+      required: [action, resource]
+      properties:
+        action:
+          type: string
+        resource:
+          type: string
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+    AuthorizeResponse:
+      type: object
+      required: [decision, reason, trace_id]
+      properties:
+        decision:
+          type: string
+          enum: [allow, deny]
+        reason:
+          type: string
+        trace_id:
+          type: string
+    AuditEvent:
+      type: object
+      properties:
+        trace_id:
+          type: string
+        subject:
+          type: string
+        action:
+          type: string
+        resource:
+          type: string
+        decision:
+          type: string
+        rule:
+          type: string
+        created_at:
+          type: string
+          format: date-time

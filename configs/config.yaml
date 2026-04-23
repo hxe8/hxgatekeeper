@@ -1,0 +1,5 @@
+service_name: gatekeeper
+bind_address: ":8080"
+audit_capacity: 256
+default_mode: deny
+policy_file: sample_data/policies.json

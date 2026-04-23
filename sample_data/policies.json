@@ -1,0 +1,30 @@
+[
+  {
+    "name": "ops-read-incidents",
+    "subjects": ["role:ops", "role:readonly"],
+    "actions": ["read"],
+    "resources": ["incidents"],
+    "constraints": {
+      "environment": ["prod", "staging"]
+    },
+    "effect": "allow"
+  },
+  {
+    "name": "deploy-prod",
+    "subjects": ["role:deploy"],
+    "actions": ["deploy"],
+    "resources": ["services"],
+    "constraints": {
+      "environment": ["prod"]
+    },
+    "effect": "allow"
+  },
+  {
+    "name": "default-sensitive-deny",
+    "subjects": ["*"],
+    "actions": ["delete", "purge"],
+    "resources": ["*"],
+    "constraints": {},
+    "effect": "deny"
+  }
+]
